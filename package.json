@@ -1,0 +1,17 @@
+{
+  "name": "com.bitomix.devconsole",
+  "version": "1.0.0",
+  "displayName": "Developer Console",
+  "description": "This package contains a feature-rich idTech-like developer console",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://example.com/",
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.6"
+  },
+  "keywords": ["console", "tools", "tool"],
+  "author": {
+    "name": "BITOMIX",
+    "email": "bitomixgames@gmail.com"
+  }
+}
