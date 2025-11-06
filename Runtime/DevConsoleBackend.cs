@@ -17,6 +17,9 @@ namespace DeveloperConsole
         private const string ALLOWED_CHARACTERS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-+*/_=<>!@#$%^&*(){}[]\"',.?;:|\\/ ";
         
+        private const string SAVE_FILE_NAME = "/devconsole.json";
+        private const string LOG_FILE_NAME = "/devconsolelog.txt";
+        
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         public static void OnLoad() => Instantiate(Resources.Load("Developer Console"));
     
@@ -322,9 +325,10 @@ namespace DeveloperConsole
             if (string.IsNullOrEmpty(line)) return;
             line = line.Trim();
 
-            if (line.Contains(';'))
+            if (GetAliasedLine(line, out var aliasedLine))
             {
-                Instance.ExecuteCommandSequence(line.Split(';'));
+                foreach (var l in aliasedLine.Split(';'))
+                    ExecuteCommand(l);
                 return;
             }
 
@@ -350,12 +354,6 @@ namespace DeveloperConsole
                     sign.Callback.Invoke(variables);
                     return;
                 }
-            }
-
-            if (GetAliasedLine(line, out var aliasedLine))
-            {
-                ExecuteCommand(aliasedLine);
-                return;
             }
 
             DevConsole.Err(Instance, "Bad command syntax");
@@ -598,7 +596,7 @@ namespace DeveloperConsole
 
         private static void Save()
         {
-            var filePath = Application.persistentDataPath + "/devconsole.txt";
+            var filePath = $"{Application.persistentDataPath}/{SAVE_FILE_NAME}";
 
             SaveFile saveFile = new();
             if (HasInstance)
@@ -614,7 +612,7 @@ namespace DeveloperConsole
 
         private static void Load()
         {
-            var filePath = Application.persistentDataPath + "/devconsole.txt";
+            var filePath = $"{Application.persistentDataPath}/{SAVE_FILE_NAME}";
             SaveFile saveFile;
 
             if (!File.Exists(filePath)) saveFile = new SaveFile();
