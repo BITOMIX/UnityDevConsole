@@ -35,12 +35,13 @@ namespace DeveloperConsole
     
         [Header("Preferences")]
         [SerializeField] private float animationDuration = 0.3f;
-        [SerializeField] private Color defaultColor = Color.white;
-        [SerializeField] private Color primaryColor = Color.purple;
-        [SerializeField] private Color successColor = Color.green;
-        [SerializeField] private Color errorColor = Color.red;
-        [SerializeField] private Color aliasColor = Color.orange;
-        [SerializeField] private Color helpColor = Color.pink;
+        [SerializeField] private Color defaultColor = new Color(1f, 1f, 1f);
+        [SerializeField] private Color primaryColor = new Color(0.627f, 0.125f, 0.941f);
+        [SerializeField] private Color successColor = new Color(0f, 1f, 0f);
+        [SerializeField] private Color errorColor = new Color(1f, 0f, 0f);
+        [SerializeField] private Color aliasColor = new Color(1f, 0.647f, 0f);
+        [SerializeField] private Color helpColor = new Color(1f, 0.078f, 0.576f);
+
     
         public string DefaultColStr => $"#{ColorUtility.ToHtmlStringRGB(defaultColor)}";
         public string PrimaryColStr => $"#{ColorUtility.ToHtmlStringRGB(primaryColor)}";
@@ -201,12 +202,16 @@ namespace DeveloperConsole
             ConsoleOpen = true;
             Keyboard.current.onTextInput += Instance.ProcessInput;
             Instance.StartCoroutine(Instance.OpenConsoleCoroutine());
-        
-            foreach (var map in Instance.m_PlayerInput.actions.actionMaps.Where(map => map.enabled))
+
+            try
             {
-                Instance.m_DisabledMaps.Add(map);
-                map.Disable();
+                foreach (var map in Instance.m_PlayerInput.actions.actionMaps.Where(map => map.enabled))
+                {
+                    Instance.m_DisabledMaps.Add(map);
+                    map.Disable();
+                }
             }
+            catch (Exception e) { _ = e; }
         }
 
         public static void Close()
