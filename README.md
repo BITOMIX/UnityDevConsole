@@ -45,6 +45,8 @@ A DevConsole class is a high level tool for interacting with the console. It off
 | `delay`    | freezes the console for some time (for multiplayer for example) |
 | `scene`    | scene manager access from the console                           |
 
+> You can get help on a command by writing `help <command>` or `<command> ?` in the console
+
 ## Defining custom commands
 
 Below is an example of a custom command class
@@ -101,6 +103,7 @@ Here is a list of supported datatypes:
 - s - string
 - i - integer
 - f - float
+- b - boolean (y/n)
 
 > You can create a parameterless single-keyword command by leaving the
 > signature parameter of the attribute empty
@@ -123,3 +126,4 @@ Aliases have a pre-defined commands for their management:
 > and separated by a semicolon ';' character
 
 BITOMIX, 1:01 PM
+
