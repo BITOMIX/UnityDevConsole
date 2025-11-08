@@ -1,9 +1,11 @@
 ﻿using System;
 
-public class DeveloperConsoleException : Exception
+namespace DeveloperConsole
 {
-    public DeveloperConsoleException(string message)  : base(message) {}
+    public class DeveloperConsoleException : Exception
+    {
+        public DeveloperConsoleException(string message)  : base(message) {}
     
-    public static DeveloperConsoleException NullInstance 
-        => new DeveloperConsoleException("Developer Console has no instance");
+        public static DeveloperConsoleException NullInstance => new("Developer Console has no instance");
+    }
 }
