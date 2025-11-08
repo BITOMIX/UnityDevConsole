@@ -48,7 +48,7 @@ namespace DeveloperConsole
     [CommandSignature("Set", "fontsize <fs:i>", "sets font size to the specified value")]
     public class FontSizeDevConsoleCommand : DevConsoleCommand
     {
-        public void Reset(string[] parameters) => DevConsoleBackend.SetFontSize(8);
+        public void Reset(string[] parameters) => DevConsoleBackend.SetFontSize(18);
         public void Set(string[] parameters) => DevConsoleBackend.SetFontSize(int.Parse(parameters[0]));
     }
     

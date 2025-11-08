@@ -78,11 +78,22 @@ public class CommandSignatureAttribute : System.Attribute
             {
                 var match = paramRegex.Match(token);
             
-                textSign += $" <{match.Groups[1].Value}>";
+                textSign += $" <{match.Groups[1].Value}|";
+                textSign += match.Groups[2].Value switch
+                {
+                    "i" => "int",
+                    "f" => "float",
+                    "s" => "string",
+                    "b" => "y/n",
+                    _ => ""
+                } + ">";
+                
                 regxSign += " " + match.Groups[2].Value switch
                 {
                     "i" => "([0-9]+)",
+                    "f" => "([0-9]+[.]*[0-9]*)",
                     "s" => "(.+)",
+                    "b" => "([yn])",
                     _ => ""
                 };
                 
