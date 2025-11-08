@@ -154,42 +154,7 @@ namespace DeveloperConsole
             derivedTypes.ToList().ForEach(t => Commands.Add(new CommandRecord(t)));
         }
 
-        private struct CommandRecord
-        {
-            internal CommandRecord(Type commandType)
-            {
-                CommandInstance = Activator.CreateInstance(commandType) as DevConsoleCommand;
-                CommandSignatures = commandType.GetCustomAttributes<CommandSignatureAttribute>().ToArray();
-                m_NameAttribute = commandType.GetCustomAttribute<CommandNameAttribute>();
-
-                foreach (var sig in CommandSignatures)
-                {
-                    var method = commandType.GetMethod(sig.MethodName);
-                    if (method == null) throw new DeveloperConsoleException(
-                        $"Method not found: '{sig.MethodName}' " + 
-                        $"for console command signature '{sig.TextSignature}'");
-
-                    sig.Callback = (CommandSignatureAttribute.ExecuteCallback)Delegate.CreateDelegate(
-                        typeof(CommandSignatureAttribute.ExecuteCallback), CommandInstance, method);
-                }
-            }
-
-            public void PrintHelp()
-            {
-                var m = $"{Name} - {m_NameAttribute.Description}";
-                m = CommandSignatures.Aggregate(m, (current, sig) => current + $"\n  {sig.TextSignature} - {sig.Hint}");
-                DevConsole.Print(m);
-            }
         
-            public DevConsoleCommand CommandInstance;
-            public CommandSignatureAttribute[] CommandSignatures;
-            public bool ThisCommand(string input) =>
-                CommandSignatures.Any(sig => sig.Test(input));
-        
-            private CommandNameAttribute m_NameAttribute;
-            public string Name => m_NameAttribute.Name.Trim();
-            public Regex[] Regex => CommandSignatures.Select(sig => sig.RegexSignature).ToArray();
-        }
 
 
 
@@ -289,7 +254,7 @@ namespace DeveloperConsole
             
             textRectTransform.sizeDelta = new Vector2(
                 textRectTransform.sizeDelta.x,
-                    Mathf.Max(consoleRect.sizeDelta.y, consoleText.preferredHeight));
+                    Mathf.Max(consoleRect.sizeDelta.y, consoleText.preferredHeight + 20));
         }
 
         private string SyntaxHighlight(string line)
@@ -339,21 +304,9 @@ namespace DeveloperConsole
                     com.PrintHelp();
                     return;
                 }
-                
-                foreach (var sign in com.CommandSignatures)
-                {
-                    var match = sign.RegexSignature.Match(line);
-                    if (!match.Success) continue;
 
-                    var variables = new string[match.Groups.Count - 1];
-                    for (var i = 0; i < variables.Length; i++)
-                    {
-                        variables[i] = match.Groups[i + 1].Value;
-                    }
-
-                    sign.Callback.Invoke(variables);
-                    return;
-                }
+                com.TryExecute(line, out var executed);
+                if (executed) return;
             }
 
             DevConsole.Err(Instance, "Bad command syntax");
